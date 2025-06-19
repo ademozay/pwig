@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Timesheet – {{ employee.name }} ({{ period.start }} → {{ period.end }})</title>
+
+  <style>
+    @page {
+      margin: 1.8cm 1.5cm 2.3cm 1.5cm;
+
+      @bottom-center {
+        content: counter(page);
+        font-size: 8pt;
+      }
+    }
+
+    body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 10pt;
+      counter-reset: page;
+    }
+
+    h1,
+    h2 {
+      margin: 0 0 .7rem 0;
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .muted {
+      font-size: 8pt;
+      color: #666;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: .7rem 0;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: .38rem .45rem;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f0f0f0;
+    }
+
+    tfoot td {
+      font-weight: bold;
+    }
+
+    .page-break {
+      break-before: page;
+      page-break-before: always;
+    }
+
+    .avoid {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .sig-box {
+      height: 70px;
+      border-bottom: 1px solid #999;
+    }
+  </style>
+</head>
+
+<body>
+
+  {% set day_labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] %}
+  {% set days = [] %}
+  {% for i in 0..6 %}
+  {% set d = period.start|date_modify('+' ~ i ~ ' day') %}
+  {% set days = days|merge([{'key': day_labels[i], 'label': day_labels[i], 'date': d}]) %}
+  {% endfor %}
+
+  <h1>Weekly Timesheet</h1>
+  <table>
+    <tr>
+      <th>Employee</th>
+      <td>{{ employee.name }}</td>
+      <th>ID</th>
+      <td>{{ employee.id }}</td>
+    </tr>
+    <tr>
+      <th>Department</th>
+      <td>{{ employee.department }}</td>
+      <th>Manager</th>
+      <td>{{ employee.manager }}</td>
+    </tr>
+    <tr>
+      <th>Week</th>
+      <td colspan="3">{{ period.start|date('d M Y') }} – {{ period.end|date('d M Y') }}</td>
+    </tr>
+  </table>
+
+  {% set totals = {} %}
+  {% for d in days %}{% set totals = totals|merge({ (d.key): 0 }) %}{% endfor %}
+  {% set week_total = 0 %}
+  {% set project_totals = {} %}
+
+  <table class="avoid">
+    <thead>
+      <tr>
+        <th>Project</th>
+        <th>Task</th>
+        {% for d in days %}
+        <th class="right">{{ d.label }}<br><span class="muted">{{ d.date|date('d M') }}</span></th>
+        {% endfor %}
+        <th class="right">Row&nbsp;Total</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for row in rows %}
+      {% set row_total = 0 %}
+      <tr>
+        <td>{{ row.project }}</td>
+        <td>{{ row.task }}</td>
+
+        {% for d in days %}
+        {% set hrs = row.hours[d.key]|default(0) %}
+        <td class="right">{{ hrs ? hrs : '' }}</td>
+        {% set row_total = row_total + hrs %}
+        {% set totals = totals|merge({ (d.key): totals[d.key] + hrs }) %}
+        {% endfor %}
+
+        <td class="right">{{ row_total }}</td>
+      </tr>
+
+      {% set project_totals = project_totals|merge({
+      (row.project): project_totals[row.project]|default(0) + row_total
+      }) %}
+      {% set week_total = week_total + row_total %}
+      {% endfor %}
+    </tbody>
+
+    <tfoot>
+      <tr>
+        <td colspan="2">Daily&nbsp;Total</td>
+        {% for d in days %}
+        <td class="right">{{ totals[d.key] }}</td>
+        {% endfor %}
+        <td class="right">{{ week_total }}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <p class="muted">* Hours recorded to the nearest quarter hour. Overtime applies above 40 hrs/week.</p>
+
+  <div class="page-break"></div>
+
+  <section>
+    <h2>Summary &amp; Approval</h2>
+
+    <table>
+      <tr>
+        <th>Total Hours</th>
+        <td class="right">{{ week_total }}</td>
+      </tr>
+      {% set overtime = week_total - 40 %}
+      <tr>
+        <th>Overtime&nbsp;Hours&nbsp;(40+)</th>
+        <td class="right">{{ overtime > 0 ? overtime : 0 }}</td>
+      </tr>
+    </table>
+
+    <h3>Project Allocation</h3>
+    <table class="avoid">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th class="right">Hours</th>
+          <th class="right">%</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for project, hrs in project_totals %}
+        {% set pct = (hrs / week_total * 100)|number_format(1, '.', ',') %}
+        <tr>
+          <td>{{ project }}</td>
+          <td class="right">{{ hrs }}</td>
+          <td class="right">{{ pct }} %</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h3>Sign-off</h3>
+    <table class="avoid">
+      <tr>
+        <th class="center">Employee Signature</th>
+        <th class="center">Manager Signature</th>
+      </tr>
+      <tr>
+        <td class="sig-box"></td>
+        <td class="sig-box"></td>
+      </tr>
+      <tr>
+        <td class="center">{{ employee.name }}<br>Date&nbsp;__________</td>
+        <td class="center">{{ employee.manager }}<br>Date&nbsp;__________</td>
+      </tr>
+    </table>
+
+    <p class="muted center">Generated&nbsp;on&nbsp;{{ "now"|date("Y-m-d H:i") }}</p>
+  </section>
+
+</body>
+
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Sprint {{ sprint.name }} Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      font-size: 0.9rem;
+    }
+
+    h1,
+    h2 {
+      margin: 0 0 0.75rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 0.4rem;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f3f3f3;
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .done {
+      background: #d4edda;
+    }
+
+    /* green  */
+    .todo {
+      background: #fff3cd;
+    }
+
+    /* amber  */
+    .blocked {
+      background: #f8d7da;
+    }
+
+    /* red    */
+    .overdue {
+      color: #b30000;
+      font-weight: bold;
+    }
+
+    .small {
+      font-size: 0.8rem;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Sprint “{{ sprint.name }}” – Report</h1>
+  <p class="small">
+    <strong>Team:</strong> {{ team|join(', ') }}<br>
+    <strong>Duration:</strong> {{ sprint.start|date('d M') }} &ndash; {{ sprint.end|date('d M Y') }}<br>
+    <strong>Prepared:</strong> {{ "now"|date('Y-m-d H:i') }}
+  </p>
+
+  {% set sprint_points = 0 %}
+  {% set completed_points = 0 %}
+
+  {% for story in stories %}
+  {% set sprint_points = sprint_points + story.points %}
+  {% if story.status == 'Done' %}
+  {% set completed_points = completed_points + story.points %}
+  {% endif %}
+  {% endfor %}
+
+  <h2>Stories ({{ completed_points }}/{{ sprint_points }} pts done)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Story</th>
+        <th class="center">Pts</th>
+        <th>Status</th>
+        <th>Owner</th>
+        <th>Tasks</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for story in stories %}
+      {% set row_class = story.status == 'Done' ? 'done' : (story.status == 'In Progress' ? 'todo' : 'blocked') %}
+      <tr class="{{ row_class }}">
+        <td class="center">{{ loop.index }}</td>
+        <td>
+          <strong>{{ story.title }}</strong><br>
+          {% if story.due and story.due < "now" |date('Y-m-d') and story.status !='Done' %} <span class="overdue">⚠
+            Overdue (was {{ story.due }})</span>
+            {% endif %}
+        </td>
+        <td class="center">{{ story.points }}</td>
+        <td>{{ story.status }}</td>
+        <td>{{ story.owner }}</td>
+        <td>
+          <ul style="margin:0; padding-left:1.2rem;">
+            {% for task in story.tasks %}
+            <li>
+              {% if task.blocked %}
+              <span style="color:#b30000;">⛔</span>
+              {% elseif task.done %}
+              <span style="color:green;">✓</span>
+              {% else %}
+              <span style="color:#888;">•</span>
+              {% endif %}
+              {{ task.title }}
+            </li>
+            {% else %}
+            <li>No tasks yet</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% set velocity = team_velocity|default(0) %}
+  {% set burndown_pct = (completed_points / sprint_points * 100)|round(1, 'floor') %}
+  <h2>Metrics</h2>
+  <table>
+    <tr>
+      <th>Total Story Points</th>
+      <td class="right">{{ sprint_points }}</td>
+    </tr>
+    <tr>
+      <th>Completed Points</th>
+      <td class="right">{{ completed_points }}</td>
+    </tr>
+    <tr>
+      <th>Burndown %</th>
+      <td class="right">{{ burndown_pct }} %</td>
+    </tr>
+    <tr>
+      <th>Average Team Velocity</th>
+      <td class="right">{{ velocity }} pts / sprint</td>
+    </tr>
+  </table>
+
+  {% if risks is defined and risks|length > 0 %}
+  <h2>Risks & Impediments</h2>
+  <ul>
+    {% for risk in risks %}
+    <li><strong>{{ risk.level|upper }}</strong> – {{ risk.description }} (Owner: {{ risk.owner }})</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if retro is defined %}
+  <h2>Retrospective Notes</h2>
+  <p><strong>What went well:</strong><br>{{ retro.good }}</p>
+  <p><strong>What to improve:</strong><br>{{ retro.improve }}</p>
+  <p><strong>Action items:</strong></p>
+  <ul>
+    {% for a in retro.actions %}<li>{{ a }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+
+</body>
+
+</html>

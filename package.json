@@ -1,0 +1,26 @@
+{
+  "name": "pwig",
+  "version": "1.0.0",
+  "description": "Generate PDF documents using Twig and Puppeteer",
+  "private": true,
+  "workspaces": [
+    "apps/backend",
+    "apps/frontend"
+  ],
+  "scripts": {
+    "start": "npm run build && concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build": "npm run clean && npm run build:backend && npm run build:frontend",
+    "build:backend": "npm run build --workspace=@pwig/backend",
+    "build:frontend": "npm run build --workspace=@pwig/frontend",
+    "start:backend": "npm run start --workspace=@pwig/backend",
+    "start:frontend": "npm run start --workspace=@pwig/frontend",
+    "dev:backend": "npm run dev --workspace=@pwig/backend",
+    "dev:frontend": "npm run dev --workspace=@pwig/frontend",
+    "clean": "rm -rf apps/*/dist"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

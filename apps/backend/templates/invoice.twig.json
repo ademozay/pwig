@@ -1,0 +1,57 @@
+{
+  "invoice": {
+    "number": "INV-2025-0614",
+    "date": "2025-06-14",
+    "due_date": "2025-06-28",
+    "currency": "TRY"
+  },
+  "seller": {
+    "name": "Acme Web Solutions Inc.",
+    "address": "123 Main St, İzmir, Türkiye",
+    "phone": "+90 232 123 45 67",
+    "email": "billing@acmeweb.com",
+    "vat": "TR1234567890"
+  },
+  "buyer": {
+    "name": "Beta Logistics Ltd.",
+    "address": "456 Industrial Ave, İstanbul, Türkiye",
+    "phone": "+90 212 987 65 43",
+    "email": "accounting@betalogs.com",
+    "contact_person": "Ayşe Demir"
+  },
+  "items": [
+    {
+      "sku": "WD101",
+      "name": "Website Redesign",
+      "description": "Complete redesign of corporate website",
+      "qty": 1,
+      "unit": "project",
+      "unit_price": 20000
+    },
+    {
+      "sku": "HS201",
+      "name": "Hosting (12 months)",
+      "description": "Managed VPS hosting",
+      "qty": 1,
+      "unit": "year",
+      "unit_price": 3600
+    },
+    {
+      "sku": "MA301",
+      "name": "Maintenance",
+      "description": "Monthly maintenance & support (6 months)",
+      "qty": 6,
+      "unit": "month",
+      "unit_price": 800
+    }
+  ],
+  "taxes": [{ "name": "KDV", "rate": 0.2 }],
+  "discount": {
+    "description": "Early payment discount",
+    "amount": 500
+  },
+  "notes": "Please make payment to the bank account specified in the contract. Late payments incur a 2% monthly interest.",
+  "show_logo": true,
+  "is_overdue": false,
+  "logo_url": "https://dummyimage.com/200x60/0e83cd/ffffff&text=ACME"
+}

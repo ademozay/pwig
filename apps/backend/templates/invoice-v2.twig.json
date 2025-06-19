@@ -1,0 +1,203 @@
+{
+  "invoice": {
+    "number": "INV-0042",
+    "issue_date": "2025-06-14",
+    "due_date": "2025-06-28",
+    "tax_rate": 0.18,
+    "items": [
+      {
+        "description": "Consulting Day 01",
+        "details": "Project Alpha",
+        "quantity": 1,
+        "unit": "day",
+        "unit_price": 800
+      },
+      {
+        "description": "Consulting Day 02",
+        "details": "Project Alpha",
+        "quantity": 1,
+        "unit": "day",
+        "unit_price": 800
+      },
+      {
+        "description": "Consulting Day 03",
+        "details": "Project Alpha",
+        "quantity": 1,
+        "unit": "day",
+        "unit_price": 800
+      },
+      {
+        "description": "Consulting Day 04",
+        "details": "Project Alpha",
+        "quantity": 1,
+        "unit": "day",
+        "unit_price": 800
+      },
+      {
+        "description": "Consulting Day 05",
+        "details": "Project Alpha",
+        "quantity": 1,
+        "unit": "day",
+        "unit_price": 800
+      },
+      {
+        "description": "Consulting Day 06",
+        "details": "Project Alpha",
+        "quantity": 1,
+        "unit": "day",
+        "unit_price": 800
+      },
+      {
+        "description": "Consulting Day 07",
+        "details": "Project Alpha",
+        "quantity": 1,
+        "unit": "day",
+        "unit_price": 800
+      },
+      {
+        "description": "Consulting Day 08",
+        "details": "Project Alpha",
+        "quantity": 1,
+        "unit": "day",
+        "unit_price": 800
+      },
+      {
+        "description": "Consulting Day 09",
+        "details": "Project Alpha",
+        "quantity": 1,
+        "unit": "day",
+        "unit_price": 800
+      },
+      {
+        "description": "Consulting Day 10",
+        "details": "Project Alpha",
+        "quantity": 1,
+        "unit": "day",
+        "unit_price": 800
+      },
+      {
+        "description": "Documentation",
+        "details": "Architecture & hand-over docs",
+        "quantity": 1,
+        "unit": "package",
+        "unit_price": 600
+      },
+      {
+        "description": "Slack Support",
+        "details": "Ad-hoc Q&A – Week 1",
+        "quantity": 1,
+        "unit": "week",
+        "unit_price": 250
+      },
+      {
+        "description": "Slack Support",
+        "details": "Ad-hoc Q&A – Week 2",
+        "quantity": 1,
+        "unit": "week",
+        "unit_price": 250
+      },
+      {
+        "description": "Code Review 01",
+        "details": "Module A",
+        "quantity": 4,
+        "unit": "hr",
+        "unit_price": 120
+      },
+      {
+        "description": "Code Review 02",
+        "details": "Module B",
+        "quantity": 4,
+        "unit": "hr",
+        "unit_price": 120
+      },
+      {
+        "description": "Code Review 03",
+        "details": "Module C",
+        "quantity": 4,
+        "unit": "hr",
+        "unit_price": 120
+      },
+      {
+        "description": "Workshop Prep",
+        "details": "Slides, exercises",
+        "quantity": 1,
+        "unit": "day",
+        "unit_price": 900
+      },
+      {
+        "description": "On-site Workshop",
+        "details": "8 participants",
+        "quantity": 1,
+        "unit": "day",
+        "unit_price": 1600
+      },
+      {
+        "description": "Travel – Flights",
+        "details": "Round trip",
+        "quantity": 1,
+        "unit": "trip",
+        "unit_price": 450
+      },
+      {
+        "description": "Travel – Hotel",
+        "details": "3 nights",
+        "quantity": 3,
+        "unit": "night",
+        "unit_price": 180
+      },
+      {
+        "description": "Travel – Meals",
+        "details": "",
+        "quantity": 3,
+        "unit": "day",
+        "unit_price": 60
+      },
+      {
+        "description": "Travel – Taxi",
+        "details": "Airport transfers",
+        "quantity": 2,
+        "unit": "ride",
+        "unit_price": 35
+      },
+      {
+        "description": "Admin Fee",
+        "details": "",
+        "quantity": 1,
+        "unit": "once",
+        "unit_price": 50
+      },
+      {
+        "description": "VAT Handling",
+        "details": "",
+        "quantity": 1,
+        "unit": "once",
+        "unit_price": 25
+      },
+      {
+        "description": "Contingency",
+        "details": "5 % of services",
+        "quantity": 1,
+        "unit": "item",
+        "unit_price": 300
+      }
+    ]
+  },
+
+  "company": {
+    "name": "Acme Tech Consulting LLC",
+    "logo_url": "https://dummyimage.com/200x60/0e83cd/ffffff&text=ACME",
+    "address_line_1": "456 Elm Street",
+    "address_line_2": "San Francisco, CA 94103",
+    "phone": "+1 415 555-0134",
+    "email": "billing@acme-tech.com",
+    "tax_id": "TIN 94-2683224"
+  },
+
+  "client": {
+    "name": "BrightWave Inc.",
+    "contact_person": "Sarah Reeves",
+    "address_line_1": "900 Lakeside Avenue",
+    "address_line_2": "Seattle, WA 98101",
+    "email": "accounting@brightwave.com"
+  }
+}

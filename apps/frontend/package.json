@@ -1,0 +1,24 @@
+{
+  "name": "@pwig/frontend",
+  "version": "1.0.0",
+  "description": "Frontend application for Pwig",
+  "type": "module",
+  "main": "src/main.ts",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "dev": "vite",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "monaco-editor": "^0.52.2",
+    "split.js": "^1.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.32",
+    "@types/split.js": "^1.6.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.0.0",
+    "vite-plugin-monaco-editor-esm": "^2.0.2"
+  }
+}

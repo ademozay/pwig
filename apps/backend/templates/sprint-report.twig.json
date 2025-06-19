@@ -1,0 +1,64 @@
+{
+  "sprint": {
+    "name": "Sprint 42 – Payment Gateway",
+    "start": "2025-06-02",
+    "end": "2025-06-15"
+  },
+  "team": ["Ada", "John", "Jeff", "Micheal", "Lily"],
+  "stories": [
+    {
+      "title": "As a user I can save a credit card",
+      "points": 8,
+      "status": "Done",
+      "owner": "John",
+      "due": "2025-06-10",
+      "tasks": [
+        { "title": "Design DB schema", "done": true, "blocked": false },
+        { "title": "Implement REST endpoint", "done": true, "blocked": false },
+        { "title": "Add unit tests", "done": true, "blocked": false }
+      ]
+    },
+    {
+      "title": "Handle 3D Secure Authentication",
+      "points": 13,
+      "status": "In Progress",
+      "owner": "Jeff",
+      "due": "2025-06-14",
+      "tasks": [
+        { "title": "Integrate bank SDK", "done": false, "blocked": true },
+        { "title": "Front-end flow", "done": false, "blocked": false }
+      ]
+    },
+    {
+      "title": "Issue refunds",
+      "points": 5,
+      "status": "Blocked",
+      "owner": "Micheal",
+      "due": "2025-06-12",
+      "tasks": [
+        { "title": "Create refund API", "done": false, "blocked": true }
+      ]
+    }
+  ],
+  "team_velocity": 24,
+  "risks": [
+    {
+      "level": "High",
+      "description": "Bank API sandbox unstable",
+      "owner": "Jeff"
+    },
+    {
+      "level": "Medium",
+      "description": "Refund workflow unclear",
+      "owner": "Micheal"
+    }
+  ],
+  "retro": {
+    "good": "Pair-programming sessions reduced defects by 30 %. Daily burndown kept us focused.",
+    "improve": "Start QA earlier; deploy to staging by mid-sprint.",
+    "actions": [
+      "Complete test automation pipeline",
+      "Schedule backlog refinement twice per sprint"
+    ]
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "company": {
+    "name": "Istanbul Robotics & AI Ltd.",
+    "logo": "https://dummyimage.com/300x120/0e83cd/ffffff&text=IRAI"
+  },
+  "year": 2024,
+  "exec_summary": "2024 marked a transformative year for Istanbul Robotics & AI Ltd. We doubled our R&D headcount, entered two new markets, and achieved record-breaking revenues driven by our warehouse automation line.",
+  "sections": [
+    {
+      "title": "Market Expansion",
+      "text": [
+        "We launched distribution partnerships in Germany, Poland, and the UAE, unlocking a combined TAM of €3 billion.",
+        "Key to success was our multilingual support centre, staffed 24/7 in five languages."
+      ],
+      "kpis": [
+        { "name": "New Contracts Signed", "value": 34, "change": 240 },
+        {
+          "name": "Annual Recurring Revenue",
+          "value": 18250000,
+          "change": 85,
+          "track_revenue": true
+        }
+      ],
+      "subsections": [
+        {
+          "title": "Flagship Deployments",
+          "text": "Our flagship IRAI-Flex robots were installed in three European mega-hubs.",
+          "images": [
+            {
+              "url": "https://dummyimage.com/700x380/f5f5f5/333&text=Berlin+Hub+Launch",
+              "caption": "Berlin, February 2024"
+            },
+            {
+              "url": "https://dummyimage.com/700x380/e8e8e8/333&text=Warsaw+Fulfilment+Centre",
+              "caption": "Warsaw, May 2024"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Innovation & R&D",
+      "text": [
+        "Our patent portfolio grew to 68 active patents, with 14 new filings in 2024.",
+        "The newly established Perception Lab focuses on tactile sensing for fragile-item handling."
+      ],
+      "kpis": [
+        { "name": "R&D Spend", "value": 5250000, "change": 47 },
+        { "name": "Patents Granted", "value": 9, "change": 50 }
+      ],
+      "subsections": [
+        {
+          "title": "Perception Lab Highlights",
+          "text": "We achieved sub-millimetre object classification accuracy with the FlexiGrasp sensor.",
+          "images": [
+            {
+              "url": "https://dummyimage.com/700x380/dcdcdc/333&text=FlexiGrasp+Demo",
+              "caption": "FlexiGrasp tactile sensor prototype"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Operational Excellence",
+      "text": [
+        "Manufacturing lead time dropped from 10 to 7 weeks thanks to lean initiatives.",
+        "Customer satisfaction (CSAT) hit 94 %, the highest in our segment."
+      ],
+      "kpis": [
+        { "name": "Units Shipped", "value": 1760, "change": 29 },
+        {
+          "name": "Manufacturing Cost / Unit",
+          "value": 11850,
+          "change": -12,
+          "track_revenue": false
+        }
+      ]
+    }
+  ],
+  "financials": {
+    "revenue_last_year": 24500000,
+    "revenue_five_years_ago": 6300000,
+    "ebitda_margin": 21.4
+  },
+  "risks": [
+    {
+      "level": "High",
+      "description": "Supply-chain dependence on single-source micro-controllers"
+    },
+    {
+      "level": "Medium",
+      "description": "Increasing competition in Europe could pressure margins"
+    }
+  ],
+  "acknowledgements": "We thank our 450 employees, partners, and shareholders for their dedication and trust in our mission to automate the world’s logistics."
+}

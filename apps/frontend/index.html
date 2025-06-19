@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pwig</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tango, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+      overflow: hidden;
+    }
+
+    .header {
+      background-color: #2d2d30;
+      padding: 10px 20px;
+      border-bottom: 1px solid #3e3e42;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      color: #569cd6;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .template-selector {
+      background-color: #3c3c3c;
+      color: #d4d4d4;
+      border: 1px solid #464647;
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+
+    .btn {
+      background-color: #0e639c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #1177bb;
+    }
+
+    .btn:disabled {
+      background-color: #666;
+      cursor: not-allowed;
+    }
+
+    .btn.pdf-export {
+      background-color: #28a745;
+    }
+
+    .btn.pdf-export:hover:not(:disabled) {
+      background-color: #218838;
+    }
+
+    .container {
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+
+    .panel {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      background-color: #252526;
+      padding: 8px 16px;
+      border-bottom: 1px solid #3e3e42;
+      font-size: 14px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .editor-panel {
+      background-color: #1e1e1e;
+    }
+
+    .preview-panel {
+      background-color: #f5f5f5;
+    }
+
+    .gutter {
+      background-color: #3e3e42;
+      transition: background-color 0.2s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .gutter:hover {
+      background-color: #569cd6;
+    }
+
+    .gutter:active {
+      background-color: #007acc;
+    }
+
+    .gutter.gutter-horizontal {
+      width: 8px;
+      cursor: col-resize;
+      background-image: linear-gradient(90deg, transparent 35%, #cccccc 35%, #cccccc 40%, transparent 40%, transparent 60%, #cccccc 60%, #cccccc 65%, transparent 65%);
+    }
+
+    .gutter.gutter-vertical {
+      height: 8px;
+      cursor: row-resize;
+      background-image: linear-gradient(0deg, transparent 35%, #cccccc 35%, #cccccc 40%, transparent 40%, transparent 60%, #cccccc 60%, #cccccc 65%, transparent 65%);
+    }
+
+    .gutter::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #cccccc;
+      opacity: 0.6;
+      transition: opacity 0.2s ease;
+    }
+
+    .gutter:hover::before {
+      opacity: 1;
+    }
+
+    .gutter.gutter-horizontal::before {
+      width: 2px;
+      height: 20px;
+      border-radius: 1px;
+    }
+
+    .gutter.gutter-vertical::before {
+      width: 20px;
+      height: 2px;
+      border-radius: 1px;
+    }
+
+    .editor-section {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .editor-container {
+      flex: 1;
+      position: relative;
+      min-height: 150px;
+    }
+
+    .variables-section {
+      background-color: #252526;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .variables-header {
+      padding: 8px 16px;
+      background-color: #2d2d30;
+      border-bottom: 1px solid #3e3e42;
+      font-size: 12px;
+      color: #cccccc;
+      flex-shrink: 0;
+    }
+
+    .variables-editor {
+      flex: 1;
+      position: relative;
+      min-height: 150px;
+    }
+
+    .preview-container {
+      flex: 1;
+      background-color: white;
+      overflow: hidden;
+      padding: 0;
+      color: black;
+      position: relative;
+    }
+
+    .preview-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      margin: 0;
+      padding: 0;
+      background-color: white;
+      display: block;
+    }
+
+    .error-display {
+      background-color: #722f37;
+      color: #f48fb1;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 4px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      color: #cccccc;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1>🎨 Pwig</h1>
+    <div class="header-controls">
+      <select class="template-selector" id="templateSelector">
+        <option value="">Select a template...</option>
+      </select>
+      <button class="btn pdf-export" id="exportPdfBtn">📄 Export to PDF</button>
+    </div>
+  </div>
+
+  <div class="container" id="split-container">
+    <div class="panel editor-panel" id="left-panel">
+      <div class="editor-section" id="twig-section">
+        <div class="panel-header">Template Editor</div>
+        <div class="editor-container" id="twigEditor"></div>
+      </div>
+
+      <div class="variables-section" id="json-section">
+        <div class="variables-header">Template Variables (JSON)</div>
+        <div class="variables-editor" id="jsonEditor"></div>
+      </div>
+    </div>
+
+    <div class="panel preview-panel" id="right-panel">
+      <div class="panel-header">Live Preview</div>
+      <div class="preview-container" id="previewContainer">
+        <div class="loading">Select a template or start typing to see the preview...</div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    window.hasUnsavedChanges = false;
+
+    window.addEventListener('beforeunload', function (e) {
+      if (window.hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+      }
+    });
+
+    window.setUnsavedChanges = function (hasChanges = true) {
+      window.hasUnsavedChanges = hasChanges;
+    };
+  </script>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>

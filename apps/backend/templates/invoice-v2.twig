@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice {{ invoice.number }} from {{ company.name }}</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+
+        .avoid-break {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .page-break {
+            break-before: page;
+            page-break-before: always;
+        }
+
+        @page {
+            margin: 20mm 18mm;
+        }
+
+        body {
+            font-family: "Inter", Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 3rem;
+            border-radius: 0.5rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #f3f4f6;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .company-details img {
+            max-width: 200px;
+            margin-bottom: 1rem;
+        }
+
+        .company-details,
+        .invoice-details {
+            width: 48%;
+        }
+
+        .company-details strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            color: #111827;
+        }
+
+        .company-details p,
+        .client-details p {
+            margin: 0;
+            color: #4b5563;
+        }
+
+        .invoice-details {
+            text-align: right;
+        }
+
+        .invoice-details h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: #111827;
+            font-weight: 700;
+        }
+
+        .invoice-details p {
+            margin: 0.25rem 0;
+        }
+
+        .client-info {
+            margin-bottom: 2rem;
+        }
+
+        .client-info h3 {
+            margin: 0 0 0.5rem 0;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+        }
+
+        .client-details strong {
+            display: block;
+            font-size: 1.1rem;
+            color: #111827;
+            font-weight: 700;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        .items-table th,
+        .items-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .items-table th {
+            background-color: #f9fafb;
+            font-weight: 700;
+            color: #374151;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .items-table td .item-description {
+            font-weight: 500;
+            color: #111827;
+        }
+
+        .items-table td .item-details {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .items-table .text-right {
+            text-align: right;
+        }
+
+        .items-table .text-center {
+            text-align: center;
+        }
+
+        .summary {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .summary-table {
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .summary-table td {
+            padding: 0.5rem 1rem;
+        }
+
+        .summary-table .label {
+            color: #4b5563;
+        }
+
+        .summary-table .value {
+            text-align: right;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .summary-table .grand-total .label,
+        .summary-table .grand-total .value {
+            font-size: 1.25rem;
+            padding-top: 1rem;
+            border-top: 2px solid #f3f4f6;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .footer .notes h4 {
+            margin: 0 0 0.5rem 0;
+            color: #111827;
+        }
+
+        .footer .payment-details {
+            margin-top: 1.5rem;
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .footer .payment-details h4 {
+            margin-top: 0;
+        }
+
+        .footer .payment-details p {
+            margin: 0.25rem 0;
+        }
+
+        .currency-symbol::before {
+            content: "$";
+        }
+
+        .currency-symbol.eur::before {
+            content: "€";
+        }
+
+        .currency-symbol.gbp::before {
+            content: "£";
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-container">
+        <header class="header">
+            <div class="company-details">
+                {% if company.logo_url %}
+                <img src="{{ company.logo_url }}" alt="{{ company.name }} Logo" />
+                {% endif %}
+                <strong>{{ company.name }}</strong>
+                <p>{{ company.address_line_1 }}</p>
+                <p>{{ company.address_line_2 }}</p>
+                <p>{{ company.phone }}</p>
+                <p>{{ company.email }}</p>
+                {% if company.tax_id %}
+                <p>{{ company.tax_id }}</p>
+                {% endif %}
+            </div>
+            <div class="invoice-details">
+                <h1>INVOICE</h1>
+                <p><strong>Invoice #:</strong> {{ invoice.number }}</p>
+                <p>
+                    <strong>Issue Date:</strong> {{ invoice.issue_date|date("F j, Y") }}
+                </p>
+                <p>
+                    <strong>Due Date:</strong> {{ invoice.due_date|date("F j, Y") }}
+                </p>
+            </div>
+        </header>
+
+        <section class="client-info">
+            <h3>Bill To</h3>
+            <div class="client-details">
+                <strong>{{ client.name }}</strong>
+                {% if client.contact_person %}
+                <p>{{ client.contact_person }}</p>
+                {% endif %}
+                <p>{{ client.address_line_1 }}</p>
+                <p>{{ client.address_line_2 }}</p>
+                <p>{{ client.email }}</p>
+            </div>
+        </section>
+
+        <section class="page-break avoid-break">
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th class="text-center">Quantity</th>
+                        <th class="text-right">Unit Price</th>
+                        <th class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in invoice.items %}
+                    <tr>
+                        <td>
+                            <div class="item-description">{{ item.description }}</div>
+                            {% if item.details %}
+                            <div class="item-details">{{ item.details }}</div>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">{{ item.quantity }} {{ item.unit }}</td>
+                        <td class="text-right">
+                            <span class="currency-symbol">{{ item.unit_price|number_format(2, '.',
+                                ',') }}</span>
+                        </td>
+                        <td class="text-right">
+                            <span class="currency-symbol">{{ (item.quantity *
+                                item.unit_price)|number_format(2, '.', ',') }}</span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4">No items on this invoice.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="summary">
+            <table class="summary-table">
+                <tbody>
+                    <tr>
+                        <td class="label">Subtotal</td>
+                        <td class="value">
+                            <span class="currency-symbol">{{ invoice.subtotal|number_format(2, '.', ',')
+                                }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            Tax ({{ (invoice.tax_rate * 100)|number_format(0) }}%)
+                        </td>
+                        <td class="value">
+                            <span class="currency-symbol">{{ invoice.tax_amount|number_format(2, '.', ',')
+                                }}</span>
+                        </td>
+                    </tr>
+                    <tr class="grand-total">
+                        <td class="label">Total</td>
+                        <td class="value">
+                            <span class="currency-symbol">{{ invoice.total|number_format(2, '.', ',')
+                                }}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer class="footer">
+            {% if invoice.notes %}
+            <div class="notes">
+                <h4>Notes</h4>
+                <p>{{ invoice.notes }}</p>
+            </div>
+            {% endif %} {% if invoice.payment_details %}
+            <div class="payment-details">
+                <h4>Payment Instructions</h4>
+                <p><strong>Bank:</strong> {{ invoice.payment_details.bank_name }}</p>
+                <p>
+                    <strong>Account Holder:</strong>
+                    {{ invoice.payment_details.account_holder }}
+                </p>
+                <p>
+                    <strong>Account Number:</strong>
+                    {{ invoice.payment_details.account_number }}
+                </p>
+                <p>
+                    <strong>SWIFT/BIC:</strong> {{ invoice.payment_details.swift_bic }}
+                </p>
+            </div>
+            {% endif %}
+        </footer>
+    </div>
+</body>
+
+</html>

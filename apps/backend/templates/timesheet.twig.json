@@ -1,0 +1,66 @@
+{
+  "employee": {
+    "name": "Emily Johnson",
+    "id": "EJ-10234",
+    "department": "Backend Engineering",
+    "manager": "Robert Thompson"
+  },
+  "period": {
+    "start": "2025-06-02",
+    "end": "2025-06-08"
+  },
+  "rows": [
+    {
+      "project": "PRJ-Alpha",
+      "task": "API Development",
+      "hours": {
+        "Mon": 8,
+        "Tue": 6,
+        "Wed": 4,
+        "Thu": 0,
+        "Fri": 0,
+        "Sat": 0,
+        "Sun": 0
+      }
+    },
+    {
+      "project": "PRJ-Alpha",
+      "task": "Bug Fixing",
+      "hours": {
+        "Mon": 0,
+        "Tue": 2,
+        "Wed": 3,
+        "Thu": 4,
+        "Fri": 2,
+        "Sat": 0,
+        "Sun": 0
+      }
+    },
+    {
+      "project": "PRJ-Beta",
+      "task": "Design Meeting",
+      "hours": {
+        "Mon": 1,
+        "Tue": 1,
+        "Wed": 0,
+        "Thu": 1,
+        "Fri": 1,
+        "Sat": 0,
+        "Sun": 0
+      }
+    },
+    {
+      "project": "PRJ-Gamma",
+      "task": "Research",
+      "hours": {
+        "Mon": 2,
+        "Tue": 0,
+        "Wed": 0,
+        "Thu": 1,
+        "Fri": 2,
+        "Sat": 5,
+        "Sun": 4
+      }
+    }
+  ]
+}

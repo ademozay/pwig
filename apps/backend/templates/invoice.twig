@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Invoice {{ invoice.number }} – {{ buyer.name }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      font-size: 0.9rem;
+    }
+
+    h1,
+    h2 {
+      margin: 0 0 1rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    th {
+      background: #f3f3f3;
+    }
+
+    tfoot td {
+      font-weight: bold;
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    .logo img {
+      max-height: 60px;
+    }
+
+    .alert {
+      color: #b30000;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  {% if show_logo %}
+  <div class="logo">
+    <img src="{{ logo_url }}" alt="{{ seller.name }} logo" />
+  </div>
+  {% endif %}
+
+  <h1>Invoice #{{ invoice.number }}</h1>
+  <p>
+    <strong>Issue&nbsp;date:</strong> {{ invoice.date|date('d M Y') }}<br>
+    <strong>Due&nbsp;date:</strong> {{ invoice.due_date|date('d M Y') }}
+  </p>
+
+  <table>
+    <tr>
+      <th>From</th>
+      <th>To</th>
+    </tr>
+    <tr>
+      <td>
+        {{ seller.name }}<br>
+        {{ seller.address }}<br>
+        VAT&nbsp;No: {{ seller.vat }}<br>
+        Tel: {{ seller.phone }}<br>
+        {{ seller.email }}
+      </td>
+      <td>
+        {{ buyer.name }}<br>
+        {{ buyer.address }}<br>
+        Attn: {{ buyer.contact_person }}<br>
+        Tel: {{ buyer.phone }}<br>
+        {{ buyer.email }}
+      </td>
+    </tr>
+  </table>
+
+  {% set subtotal = 0 %}
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>SKU</th>
+        <th>Description</th>
+        <th class="right">Qty</th>
+        <th class="right">Unit (₺)</th>
+        <th class="right">Line Total (₺)</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for item in items %}
+      {% set line_total = item.qty * item.unit_price %}
+      {% set subtotal = subtotal + line_total %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ item.sku }}</td>
+        <td>
+          <strong>{{ item.name }}</strong><br>
+          <small>{{ item.description }}</small>
+        </td>
+        <td class="right">{{ item.qty }}</td>
+        <td class="right">{{ item.unit_price|number_format(2, '.', ',') }}</td>
+        <td class="right">{{ line_total|number_format(2, '.', ',') }}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="6" class="right">No items</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+
+    <tfoot>
+      <tr>
+        <td colspan="5">Subtotal</td>
+        <td class="right">{{ subtotal|number_format(2, '.', ',') }}</td>
+      </tr>
+
+      {% if discount is defined and discount.amount > 0 %}
+      <tr>
+        <td colspan="5">Discount – {{ discount.description }}</td>
+        <td class="right">-{{ discount.amount|number_format(2, '.', ',') }}</td>
+      </tr>
+      {% set subtotal = subtotal - discount.amount %}
+      {% endif %}
+
+      {% set tax_total = 0 %}
+      {% for tax in taxes %}
+      {% set tax_amount = subtotal * tax.rate %}
+      {% set tax_total = tax_total + tax_amount %}
+      <tr>
+        <td colspan="5">{{ tax.name }} ({{ (tax.rate * 100)|number_format(0) }} %)</td>
+        <td class="right">{{ tax_amount|number_format(2, '.', ',') }}</td>
+      </tr>
+      {% endfor %}
+
+      {% set grand_total = subtotal + tax_total %}
+      <tr>
+        <td colspan="5">Grand Total</td>
+        <td class="right">{{ grand_total|number_format(2, '.', ',') }}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  {% if is_overdue %}
+  <p class="alert">⚠️ This invoice is overdue. Please settle immediately.</p>
+  {% endif %}
+
+  {% if notes is defined %}
+  <p style="margin-top:1.5rem;">{{ notes }}</p>
+  {% endif %}
+
+</body>
+
+</html>

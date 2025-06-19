@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>{{ company.name }} – Annual Report {{ year }}</title>
+
+  <style>
+    @page {
+      margin: 2cm 1.5cm;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 10pt;
+      counter-reset: page;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0 0 .6rem 0;
+    }
+
+    p {
+      margin: .4rem 0;
+      line-height: 1.45;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: .8rem 0;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: .35rem .45rem;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f3f3f3;
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .muted {
+      color: #666;
+      font-size: 8pt;
+    }
+
+    .avoid-break {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .page-break {
+      break-before: page;
+      page-break-before: always;
+    }
+
+    /* --- Page numbers --- */
+    @page {
+      @bottom-center {
+        content: counter(page);
+        font-size: 8pt;
+      }
+    }
+
+    .cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 90vh;
+      text-align: center;
+    }
+
+    .cover h1 {
+      font-size: 40pt;
+      margin-bottom: 0;
+    }
+
+    .cover h2 {
+      font-size: 18pt;
+      margin-top: .3em;
+      letter-spacing: .07em;
+    }
+
+    .toc h2 {
+      text-align: center;
+    }
+
+    .toc ul {
+      list-style: none;
+      padding-left: 0;
+      max-width: 17cm;
+      margin: 1rem auto;
+    }
+
+    .toc li {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dotted #bbb;
+      padding: .2rem 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <section class="cover">
+    {% if company.logo %}
+    <img src="{{ company.logo }}" alt="{{ company.name }} logo" style="max-height:120px; margin-bottom:1rem;">
+    {% endif %}
+    <h1>{{ company.name }}</h1>
+    <h2>Annual Report {{ year }}</h2>
+  </section>
+
+  <div class="page-break"></div>
+
+  <section class="toc">
+    <h2>Table of Contents</h2>
+    <ul>
+      <li><span>Executive Summary</span><span>1</span></li>
+      {# sections start on page-breaks, page numbers here are illustrative; update manually if PDF engine cannot
+      auto-ref #}
+      {% for s in sections %}
+      <li><span>{{ loop.index ~ '. ' ~ s.title }}</span><span>{{ loop.index + 1 }}</span></li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <div class="page-break"></div>
+
+  {% macro kpi_row(k) %}
+  <tr>
+    <td>{{ k.name }}</td>
+    <td class="right">{{ k.value|number_format(2, '.', ',') }}</td>
+    <td class="right">{% if k.change is defined %}{{ k.change|number_format(1, '.', ',') }} %{% else %}&mdash;{% endif
+      %}</td>
+  </tr>
+  {% endmacro %}
+
+  <section>
+    <h2>Executive Summary</h2>
+    <p>{{ exec_summary }}</p>
+  </section>
+
+  {% import _self as utils %}
+  {% set total_revenue = 0 %}
+
+  {% for s in sections %}
+  <div class="page-break"></div>
+  <section>
+    <h2>{{ loop.index }}. {{ s.title }}</h2>
+
+    {% for paragraph in s.text %}
+    <p>{{ paragraph }}</p>
+    {% endfor %}
+
+    {% if s.kpis is defined and s.kpis|length > 0 %}
+    <h3>Key Performance Indicators</h3>
+    <table class="avoid-break">
+      <thead>
+        <tr>
+          <th>KPI</th>
+          <th class="right">Value (₺)</th>
+          <th class="right">Δ YoY</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for kpi in s.kpis %}
+        {{ utils.kpi_row(kpi) }}
+        {% if kpi.track_revenue is defined and kpi.track_revenue %}
+        {% set total_revenue = total_revenue + kpi.value %}
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+
+    {% if s.subsections is defined %}
+    {% for sub in s.subsections %}
+    <h3>{{ sub.title }}</h3>
+    <p>{{ sub.text }}</p>
+
+    {% if sub.images is defined and sub.images|length > 0 %}
+    <table class="avoid-break">
+      <tbody>
+        {% for img in sub.images %}
+        <tr>
+          <td>
+            <img src="{{ img.url }}" alt="{{ img.caption }}" style="max-width:100%;">
+            <p class="muted">{{ img.caption }}</p>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+  </section>
+  {% endfor %}
+
+  <div class="page-break"></div>
+  <section>
+    <h2>Financial Overview</h2>
+    <table class="avoid-break">
+      <tr>
+        <th>Total Revenue (tracked sections)</th>
+        <td class="right">{{ total_revenue|number_format(2, '.', ',') }} ₺</td>
+      </tr>
+      <tr>
+        <th>5-year CAGR</th>
+        {% set cagr = ((financials.revenue_last_year / financials.revenue_five_years_ago) ** (1/5) - 1) * 100 %}
+        <td class="right">{{ cagr|number_format(2, '.', ',') }} %</td>
+      </tr>
+      <tr>
+        <th>EBITDA Margin</th>
+        <td class="right">{{ financials.ebitda_margin }} %</td>
+      </tr>
+    </table>
+  </section>
+
+  {% if risks|default([])|length > 0 %}
+  <div class="page-break"></div>
+  <section>
+    <h2>Risk Factors</h2>
+    <ul>
+      {% for r in risks %}
+      <li><strong>{{ r.level|upper }}</strong> &ndash; {{ r.description }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if acknowledgements is defined %}
+  <div class="page-break"></div>
+  <section>
+    <h2>Acknowledgements</h2>
+    <p>{{ acknowledgements }}</p>
+  </section>
+  {% endif %}
+
+</body>
+
+</html>
